@@ -190,11 +190,6 @@
 
 						buttonContainer.appendChild(testButton);
 
-						const container = document.getElementById("hide");
-						buttonContainer.addEventListener("click", () => {
-							container.style.display = "flex";
-						});
-
 						return testButton;
 					}
 					async run(lat, long) {
@@ -208,9 +203,9 @@
 						}
 						try {
 							// *** Can use this to test the error catch ***
-							const error = new Error();
-							error.message = "Service not available. Please try again later.";
-							throw error;
+							// const error = new Error();
+							// error.message = "Service not available. Please try again later.";
+							// throw error;
 
 							const { data } = await axios(
 								`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=c1c13cdc1409fa86b9c7a14b03704d29`
@@ -266,11 +261,19 @@
 							".temperature-max",
 							results.main.temp_max
 						);
+
+            this.showWeather()
 					}
 
 					// helper function to make cleaner code
 					_handleSelectorValue(selector, value, { parent = document } = {}) {
 						parent.querySelector(`${selector}`).textContent = value;
+					}
+
+					// used to show weather after location and weather data has been fetched
+					showWeather(latitude, longitude) {
+						const container = document.getElementById("hide");
+						container.style.display = "flex";
 					}
 
 					// Location handlers
@@ -291,7 +294,7 @@
 						const latitude = position.coords.latitude;
 						const longitude = position.coords.longitude;
 
-						this.run(latitude, longitude);
+						return this.run(latitude, longitude);
 					}
 
 					// handle errors if there's an error with getting geo data - kick off run() method to grab weather data
@@ -314,8 +317,7 @@
 						}
 					}
 				}
-				
-				
+
 				// Creates a button for kicking off the test and adds it to the DOM
 				const test = new Test();
 				test.addButtonForTest();
