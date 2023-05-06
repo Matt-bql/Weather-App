@@ -45,7 +45,11 @@
 				margin-left: 10px;
 				padding-left: 10px;
 			}
+			.weather-main {
+				font-weight: 700;
+			}
 			.header-left {
+				font-weight: 200;
 				display: flex;
 				padding-left: 310px;
 				padding-right: 20px;
@@ -56,7 +60,22 @@
 			.header-current-temp {
 				align-items: center;
 				font-size: 2rem;
-				margin-left: 1rem;
+				margin-left: 2rem;
+			}
+			.temp-container {
+				display: inline-block;
+				align-content: center;
+        padding-left: 10px;
+			}
+			.temp-label {
+				display: inline-block;
+				font-weight: 400;
+				font-size: medium;
+			}
+			.temperature {
+				display: inline-block;
+				font-weight: 400;
+				font-size: medium;
 			}
 			.data-container {
 				display: flex;
@@ -117,8 +136,11 @@
 						<td class="data-box">
 							<div class="header-current-temp">
 								<td class="data-box">
-									<div class="label">Temp</div>
-									<div class="temperature">&deg;</div>
+									<div class="weather-main"></div>
+									<div class="temp-container">
+										<div class="temp-label">Temp</div>
+										<div class="temperature"></div>
+									</div>
 								</td>
 							</div>
 						</td>
@@ -128,15 +150,15 @@
 							<tbody class="current-weather-section-1">
 								<td class="data-box">
 									<div class="label">Feels Like</div>
-									<div class="feels-like">&deg;</div>
+									<div class="feels-like"></div>
 								</td>
 								<td class="data-box">
 									<div class="label">Temp Min</div>
-									<div class="temperature-min">&deg;</div>
+									<div class="temperature-min"></div>
 								</td>
 								<td class="data-box">
 									<div class="label">Temp Max</div>
-									<div class="temperature-max">&deg;</div>
+									<div class="temperature-max"></div>
 								</td>
 								<td class="data-box">
 									<div class="label">Pressure</div>
@@ -155,9 +177,8 @@
 									<div class="visibility">date val</div>
 								</td>
 								<td class="data-box">
-									<div class="wind">Wind</div>
-									<div class="wind-speed">Speed</div>
-									<div class="wind-degree"></div>
+									<div class="label">Wind Speed</div>
+									<div class="wind-speed"></div>
 								</td>
 								<td class="data-box">
 									<div class="label">Clouds</div>
@@ -228,6 +249,7 @@
 						errorResults.innerHTML = ` <h2 style="display:flex;justify-content:center;"> ${errorMessage.innerText} </h2> `;
 					}
 
+					// prettier-ignore
 					setResults(results) {
 						console.log(results, "results");
 						const options = { year: "numeric", month: "short", day: "numeric" };
@@ -243,26 +265,20 @@
 
 						this._handleSelectorValue(".location", results.name);
 						this._handleSelectorValue(".date", date);
-						this._handleSelectorValue(".temperature", results.main.temp);
-						this._handleSelectorValue(".feels-like", results.main.feels_like);
+						this._handleSelectorValue(".temperature", `${Math.ceil(results.main.temp)}k`);
+						this._handleSelectorValue(".feels-like", `${Math.ceil(results.main.feels_like)}k`);
 						this._handleSelectorValue(".pressure", results.main.pressure);
 						this._handleSelectorValue(".humidity", results.main.humidity);
 						this._handleSelectorValue(".visibility", results.visibility);
 						this._handleSelectorValue(".wind-speed", results.wind.speed);
-						this._handleSelectorValue(".wind-degree", results.wind.deg);
 						this._handleSelectorValue(".clouds", results.clouds.all);
 						this._handleSelectorValue(".sunrise", results.sys.sunrise);
 						this._handleSelectorValue(".sunset", results.sys.sunset);
-						this._handleSelectorValue(
-							".temperature-min",
-							results.main.temp_min
-						);
-						this._handleSelectorValue(
-							".temperature-max",
-							results.main.temp_max
-						);
+						this._handleSelectorValue(".temperature-min", `${Math.ceil(results.main.temp_min)}k`);
+						this._handleSelectorValue(".temperature-max", `${Math.ceil(results.main.temp_max)}k`);
+						this._handleSelectorValue(".weather-main", results.weather[0].main);
 
-            this.showWeather()
+						this.showWeather();
 					}
 
 					// helper function to make cleaner code
