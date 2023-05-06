@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<title>FreightWise Programming Test</title>
+		<script>
+			"use strict";
+			/**
+				Key points: 
+					* Create button that, when clicked, requests geo location data, if permission granted grab that geo data and pass it into
+					  the run() method and grab weather data that is relevant to that location. If permission not granted we default the location to 
+						Brentwood, TN.
+
+					If I had more time:
+						* make elements responsive to screen size
+						* make the code more cohesive and ahere more to functional paradigm. - my preference
+						* paint a better story for the weather data being displayed (better styling)
+			 */
+		</script>
+		<style>
+			#hide {
+				display: none;
+			}
+			.body {
+				margin: 0;
+				background-color: hsl(200, 100%, 85%);
+				color: hsl(200, 100%, 10%);
+				font-family: sans-serif;
+				padding: 20px;
+			}
+			.header {
+				display: flex;
+				align-items: center;
+			}
+			.location-date-container {
+				display: flex;
+				position: fixed;
+				top: 0;
+				left: 0;
+				padding: 20px;
+			}
+			.date {
+				border-left: solid black;
+				margin-left: 10px;
+				padding-left: 10px;
+			}
+			.header-left {
+				display: flex;
+				padding-left: 310px;
+				padding-right: 20px;
+				justify-content: center;
+				margin: 0.5rem;
+				border-right: solid black;
+			}
+			.header-current-temp {
+				align-items: center;
+				font-size: 2rem;
+				margin-left: 1rem;
+			}
+			.data-container {
+				display: flex;
+				display: flex;
+				margin-top: 50px;
+				width: 100vw;
+			}
+			.current-weather-section-1 {
+				padding-left: 20px;
+			}
+			.current-weather-section-2 {
+				padding-left: 20px;
+			}
+			.data-box {
+				justify-items: center;
+				width: 100px;
+			}
+			.button-container {
+				text-align: center;
+			}
+			.button-container > button {
+				margin: 0;
+				padding: 10px 18px;
+				color: white;
+				background-color: #156d83;
+				border: none;
+				border-radius: 3px;
+				transition: all 200ms ease-in-out;
+				font-size: 14px;
+			}
+			.button-container > button:hover {
+				background-color: #294f63;
+			}
+			.button-container > button:active {
+				background-color: #523aa0;
+			}
+			.sms-form {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				width: 100vw;
+				margin-top: 30px;
+			}
+		</style>
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	</head>
+	<body class="body">
+		<div class="button-container"></div>
+		<div class="error-catch">
+			<div id="hide">
+				<div class="location-date-container">
+					<div class="location"></div>
+					<div class="date"></div>
+				</div>
+				<div class="data-container">
+					<div class="header"></div>
+					<div class="header-left">
+						<td class="data-box">
+							<div class="header-current-temp">
+								<td class="data-box">
+									<div class="label">Temp</div>
+									<div class="temperature">&deg;</div>
+								</td>
+							</div>
+						</td>
+					</div>
+					<table>
+						<tr>
+							<tbody class="current-weather-section-1">
+								<td class="data-box">
+									<div class="label">Feels Like</div>
+									<div class="feels-like">&deg;</div>
+								</td>
+								<td class="data-box">
+									<div class="label">Temp Min</div>
+									<div class="temperature-min">&deg;</div>
+								</td>
+								<td class="data-box">
+									<div class="label">Temp Max</div>
+									<div class="temperature-max">&deg;</div>
+								</td>
+								<td class="data-box">
+									<div class="label">Pressure</div>
+									<div class="pressure"></div>
+								</td>
+								<td class="data-box">
+									<div class="label">Humidity</div>
+									<div class="humidity"></div>
+								</td>
+							</tbody>
+						</tr>
+						<tr>
+							<tbody class="current-weather-section-2">
+								<td class="data-box">
+									<div class="label">Visibility</div>
+									<div class="visibility">date val</div>
+								</td>
+								<td class="data-box">
+									<div class="wind">Wind</div>
+									<div class="wind-speed">Speed</div>
+									<div class="wind-degree"></div>
+								</td>
+								<td class="data-box">
+									<div class="label">Clouds</div>
+									<div class="clouds"></div>
+								</td>
+								<td class="data-box">
+									<div class="label">Sunrise</div>
+									<div class="sunrise"></div>
+								</td>
+								<td class="data-box">
+									<div class="label">Sunset</div>
+									<div class="sunset"></div>
+								</td>
+							</tbody>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<script>
+				class Test {
+					constructor() {}
+					addButtonForTest() {
+						const buttonContainer =
+							document.getElementsByClassName("button-container")[0];
+						let testButton = document.createElement("button");
+
+						testButton.type = "button";
+						testButton.innerText = "Get the Weather";
+						testButton.onclick = () => this.getLocation();
+
+						buttonContainer.appendChild(testButton);
+
+						const container = document.getElementById("hide");
+						buttonContainer.addEventListener("click", () => {
+							container.style.display = "flex";
+						});
+
+						return testButton;
+					}
+					async run(lat, long) {
+						let latitude = "36.03";
+						let longitude = "-86.78";
+
+						// if location data doesn't exist - default location to brentwood, tn
+						if (lat && long) {
+							latitude = lat;
+							longitude = long;
+						}
+						try {
+							// *** Can use this to test the error catch ***
+							const error = new Error();
+							error.message = "Service not available. Please try again later.";
+							throw error;
+
+							const { data } = await axios(
+								`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=c1c13cdc1409fa86b9c7a14b03704d29`
+							);
+							this.setResults(data);
+						} catch (error) {
+							this.setError(
+								`Error with fetching weather data: ${error.message}`
+							);
+						}
+					}
+
+					// setting and styling the error message
+					setError(message) {
+						let errorResults = document.querySelector(".error-catch");
+						let errorMessage = document.createElement("error-message");
+
+						errorMessage.type = "h1";
+						errorMessage.innerText = message;
+						errorResults.innerHTML = ` <h2 style="display:flex;justify-content:center;"> ${errorMessage.innerText} </h2> `;
+					}
+
+					setResults(results) {
+						console.log(results, "results");
+						const options = { year: "numeric", month: "short", day: "numeric" };
+						const date = new Date().toLocaleDateString("en-US", options);
+
+						// formatting the sunrise/sunset time to not show the day and month
+						results.sys.sunrise = new Date(
+							results.sys.sunrise
+						).toLocaleTimeString("en-US");
+						results.sys.sunset = new Date(
+							results.sys.sunset
+						).toLocaleTimeString("en-US");
+
+						this._handleSelectorValue(".location", results.name);
+						this._handleSelectorValue(".date", date);
+						this._handleSelectorValue(".temperature", results.main.temp);
+						this._handleSelectorValue(".feels-like", results.main.feels_like);
+						this._handleSelectorValue(".pressure", results.main.pressure);
+						this._handleSelectorValue(".humidity", results.main.humidity);
+						this._handleSelectorValue(".visibility", results.visibility);
+						this._handleSelectorValue(".wind-speed", results.wind.speed);
+						this._handleSelectorValue(".wind-degree", results.wind.deg);
+						this._handleSelectorValue(".clouds", results.clouds.all);
+						this._handleSelectorValue(".sunrise", results.sys.sunrise);
+						this._handleSelectorValue(".sunset", results.sys.sunset);
+						this._handleSelectorValue(
+							".temperature-min",
+							results.main.temp_min
+						);
+						this._handleSelectorValue(
+							".temperature-max",
+							results.main.temp_max
+						);
+					}
+
+					// helper function to make cleaner code
+					_handleSelectorValue(selector, value, { parent = document } = {}) {
+						parent.querySelector(`${selector}`).textContent = value;
+					}
+
+					// Location handlers
+					async getLocation() {
+						if (navigator.geolocation) {
+							const currentLocation =
+								await navigator.geolocation.getCurrentPosition(
+									this.showPosition.bind(this),
+									this.showError.bind(this)
+								);
+						} else {
+							console.error("Geolocation is not supported by this browser.");
+						}
+					}
+
+					// grab coords and pass them to the run() method to kick off fetching of weather data.
+					async showPosition(position) {
+						const latitude = position.coords.latitude;
+						const longitude = position.coords.longitude;
+
+						this.run(latitude, longitude);
+					}
+
+					// handle errors if there's an error with getting geo data - kick off run() method to grab weather data
+					async showError(error) {
+						this.run();
+
+						switch (error.code) {
+							case error.PERMISSION_DENIED:
+								console.error("User denied the request for Geolocation.");
+								return;
+							case error.POSITION_UNAVAILABLE:
+								console.error("Location information is unavailable.");
+								return;
+							case error.TIMEOUT:
+								console.error("The request to get user location timed out.");
+								return;
+							case error.UNKNOWN_ERROR:
+								console.error("An unknown error occurred.");
+								return;
+						}
+					}
+				}
+
+				// Creates a button for kicking off the test and adds it to the DOM
+				const test = new Test();
+				test.addButtonForTest();
+			</script>
+		</div>
+	</body>
+</html>
